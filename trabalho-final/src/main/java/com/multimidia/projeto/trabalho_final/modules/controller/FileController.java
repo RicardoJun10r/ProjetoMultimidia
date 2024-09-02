@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.multimidia.projeto.trabalho_final.modules.model.FileEntity;
 import com.multimidia.projeto.trabalho_final.modules.service.FileService;
+import com.multimidia.projeto.trabalho_final.modules.shared.FileResponseDTO;
 
 @RestController
 @RequestMapping("/api/files")
@@ -20,7 +21,7 @@ public class FileController {
     private FileService fileService;
 
     @GetMapping
-    public List<FileEntity> getAllFiles() {
+    public List<FileResponseDTO> getAllFiles() {
         return fileService.findAll();
     }
 
@@ -35,28 +36,16 @@ public class FileController {
 
     @SuppressWarnings("null")
     @PostMapping
-    public ResponseEntity<FileEntity> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<FileResponseDTO> uploadFile(@RequestParam UUID user, @RequestParam("file") MultipartFile file) {
         try {
             FileEntity fileEntity = new FileEntity();
             fileEntity.setFileName(file.getOriginalFilename());
             fileEntity.setData(file.getBytes());
-            fileService.save(fileEntity);
-
-            return new ResponseEntity<>(fileEntity, HttpStatus.CREATED);
+            
+            return new ResponseEntity<>(fileService.save(user, fileEntity), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<FileEntity> updateFile(@PathVariable UUID id, @RequestBody FileEntity fileDetails) {
-        FileEntity fileEntity = fileService.findById(id);
-        if (fileEntity != null) {
-            fileEntity.setFileName(fileDetails.getFileName());
-            fileEntity.setData(fileDetails.getData());
-            return ResponseEntity.ok(fileService.save(fileEntity));
-        }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

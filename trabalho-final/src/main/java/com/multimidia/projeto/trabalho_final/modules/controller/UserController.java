@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.multimidia.projeto.trabalho_final.modules.model.User;
 import com.multimidia.projeto.trabalho_final.modules.service.UserService;
+import com.multimidia.projeto.trabalho_final.modules.shared.UserResponseDTO;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,7 +19,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserResponseDTO> getAllUsers() {
         return userService.findAll();
     }
 
