@@ -26,10 +26,10 @@ public class FileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FileEntity> getFileById(@PathVariable UUID id) {
+    public ResponseEntity<byte[]> getFileById(@PathVariable UUID id) {
         FileEntity fileEntity = fileService.findById(id);
         if (fileEntity != null) {
-            return ResponseEntity.ok(fileEntity);
+            return ResponseEntity.ok(fileEntity.getData());
         }
         return ResponseEntity.notFound().build();
     }

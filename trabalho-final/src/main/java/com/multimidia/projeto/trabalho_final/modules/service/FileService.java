@@ -38,10 +38,11 @@ public class FileService {
     public FileResponseDTO save(UUID id, FileEntity fileEntity) {
         Optional<User> user = this.userRepo.findById(id);
         if(user.isPresent()){
-            user.get().getFiles().put(fileEntity.getFileName(), fileEntity);
+            System.out.println("Achou usuario");
             fileEntity.setUser(user.get());
-            userRepo.save(user.get());
+            user.get().getFiles().put(fileEntity.getFileName(), fileEntity);
             fileRepo.save(fileEntity);
+            userRepo.save(user.get());
             return new FileResponseDTO(fileEntity.getFileName(), fileEntity.getData().length, fileEntity.getData());
         }
         return null;
