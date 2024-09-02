@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +33,8 @@ public class FileController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @SuppressWarnings("null")
+    @PostMapping
     public ResponseEntity<FileEntity> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             FileEntity fileEntity = new FileEntity();
