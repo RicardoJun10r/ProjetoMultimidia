@@ -39,6 +39,7 @@ public class FileService {
         return fileRepo.findById(id).orElse(null);
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public FileResponseDTO save(UUID id, MultipartFile file) {
         Optional<User> user = this.userRepo.findById(id);
         if(user.isPresent()){
