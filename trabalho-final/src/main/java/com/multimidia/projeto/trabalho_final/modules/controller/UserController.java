@@ -24,8 +24,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
-        User user = userService.findById(id);
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable UUID id) {
+        UserResponseDTO user = userService.findById(id);
         if (user != null) {
             return ResponseEntity.ok(user);
         }
@@ -35,17 +35,6 @@ public class UserController {
     @PostMapping
     public User createUser(@RequestBody User user) {
         return userService.save(user);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User userDetails) {
-        User user = userService.findById(id);
-        if (user != null) {
-            user.setEmail(userDetails.getEmail());
-            user.setPassword(userDetails.getPassword());
-            return ResponseEntity.ok(userService.save(user));
-        }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

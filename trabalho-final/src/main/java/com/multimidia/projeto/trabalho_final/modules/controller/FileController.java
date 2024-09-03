@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,10 +27,12 @@ public class FileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getFileById(@PathVariable UUID id) {
+    public ResponseEntity<?> getFileById(@PathVariable UUID id) {
         FileEntity fileEntity = fileService.findById(id);
         if (fileEntity != null) {
-            return ResponseEntity.ok(fileEntity.getData());
+            return ResponseEntity.status(HttpStatus.OK)
+            .contentType(MediaType.valueOf(fileEntity.getType()))
+            .body(fileEntity.getData());
         }
         return ResponseEntity.notFound().build();
     }
@@ -38,11 +41,7 @@ public class FileController {
     @PostMapping
     public ResponseEntity<FileResponseDTO> uploadFile(@RequestParam UUID user, @RequestParam("file") MultipartFile file) {
         try {
-            FileEntity fileEntity = new FileEntity();
-            fileEntity.setFileName(file.getOriginalFilename());
-            fileEntity.setData(file.getBytes());
-            
-            return new ResponseEntity<>(fileService.save(user, fileEntity), HttpStatus.CREATED);
+            return new ResponseEntity<>(fileService.save(user, file), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

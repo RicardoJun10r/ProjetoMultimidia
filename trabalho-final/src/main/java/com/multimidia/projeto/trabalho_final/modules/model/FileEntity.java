@@ -28,9 +28,15 @@ public class FileEntity {
     @Column(name = "nome_arquivo")
     private String fileName;
 
+    @Column(name = "tipo_arquivo")
+    private String type;
+
     @Lob
     @Column(name = "arquivo")
     private byte[] data;
+
+    @Column(name = "tamanho")
+    private Long size;
 
     @ManyToOne
     @JoinColumn(name = "user_id") // Nome da coluna para a chave estrangeira

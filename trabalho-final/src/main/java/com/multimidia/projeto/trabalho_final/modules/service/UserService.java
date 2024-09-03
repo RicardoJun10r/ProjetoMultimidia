@@ -4,7 +4,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.multimidia.projeto.trabalho_final.modules.config.ModelMapperConfig;
 import com.multimidia.projeto.trabalho_final.modules.model.User;
 import com.multimidia.projeto.trabalho_final.modules.repo.UserRepo;
 import com.multimidia.projeto.trabalho_final.modules.shared.UserResponseDTO;
@@ -19,8 +18,9 @@ public class UserService {
     @Autowired
     private UserRepo userRepository;
 
-    private ModelMapper mapper = new ModelMapperConfig().modelMapper();
+    private ModelMapper mapper = new ModelMapper();
 
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public List<UserResponseDTO> findAll() {
         List<User> users = userRepository.findAll();
         return users.stream()
@@ -28,10 +28,11 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public User findById(UUID id) {
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public UserResponseDTO findById(UUID id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
-            return user;
+            return mapper.map(user, UserResponseDTO.class);
         }
         return null;
     }
