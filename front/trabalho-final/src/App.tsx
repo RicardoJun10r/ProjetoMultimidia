@@ -1,12 +1,13 @@
-import { Button } from './components/ui/button'
+import { Outlet } from 'react-router-dom'
+import { Layout } from './components/layout/main-layout'
 
 function App() {
   return (
-    <>
-        <Button>
-          Ola
-        </Button>
-    </>
+    <div className='h-screen w-screen'>
+      <Layout>
+        <Outlet />
+      </Layout>
+    </div>
   )
 }
 
