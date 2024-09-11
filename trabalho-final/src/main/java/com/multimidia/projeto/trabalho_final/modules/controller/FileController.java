@@ -37,9 +37,20 @@ public class FileController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/buscar")
+    public ResponseEntity<?> downloadFile(@RequestParam String user, @RequestParam("file") String file) {
+        FileEntity fileEntity = fileService.findByName(user, file);
+        if (fileEntity != null) {
+            return ResponseEntity.status(HttpStatus.OK)
+            .contentType(MediaType.valueOf(fileEntity.getType()))
+            .body(fileEntity.getData());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @SuppressWarnings("null")
     @PostMapping
-    public ResponseEntity<FileResponseDTO> uploadFile(@RequestParam UUID user, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<FileResponseDTO> uploadFile(@RequestParam String user, @RequestParam("file") MultipartFile file) {
         try {
             return new ResponseEntity<>(fileService.save(user, file), HttpStatus.CREATED);
         } catch (Exception e) {

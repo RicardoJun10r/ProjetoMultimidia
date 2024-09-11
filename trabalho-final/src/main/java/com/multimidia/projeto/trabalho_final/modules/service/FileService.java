@@ -39,9 +39,18 @@ public class FileService {
         return fileRepo.findById(id).orElse(null);
     }
 
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public FileEntity findByName(String email_user, String file) {
+        Optional<User> user = this.userRepo.findByEmail(email_user);
+        if(user.isPresent()){
+            return user.get().getFiles().get(file);
+        }
+        return null;
+    }
+
     @org.springframework.transaction.annotation.Transactional
-    public FileResponseDTO save(UUID id, MultipartFile file) {
-        Optional<User> user = this.userRepo.findById(id);
+    public FileResponseDTO save(String email_user, MultipartFile file) {
+        Optional<User> user = this.userRepo.findByEmail(email_user);
         if(user.isPresent()){
             try {
                 FileEntity fileEntity = new FileEntity();
