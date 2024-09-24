@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.multimidia.projeto.trabalho_final.modules.model.User;
 import com.multimidia.projeto.trabalho_final.modules.service.UserService;
+import com.multimidia.projeto.trabalho_final.modules.shared.UserLogin;
 import com.multimidia.projeto.trabalho_final.modules.shared.UserResponseDTO;
 
 @RestController
@@ -30,6 +31,11 @@ public class UserController {
             return ResponseEntity.ok(user);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/login")
+    public User login(@RequestBody UserLogin user){
+        return this.userService.login(user.email(), user.password());
     }
 
     @PostMapping
