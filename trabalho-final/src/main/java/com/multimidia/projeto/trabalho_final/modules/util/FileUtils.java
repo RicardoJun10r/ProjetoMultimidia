@@ -4,13 +4,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.apache.commons.compress.archivers.ArchiveEntry; // Correct import
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
-import org.hibernate.boot.archive.spi.ArchiveEntry;
 
 public class FileUtils {
-    
+
     public static byte[] compressFile(byte[] data, String fileName) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ZipArchiveOutputStream zaos = new ZipArchiveOutputStream(baos)) {
@@ -26,7 +26,7 @@ public class FileUtils {
     public static byte[] decompressFile(byte[] compressedData) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(compressedData);
         try (ZipArchiveInputStream zais = new ZipArchiveInputStream(bais)) {
-            ArchiveEntry entry = (ArchiveEntry) zais.getNextEntry();
+            ArchiveEntry entry = zais.getNextEntry();
             if (entry != null) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 byte[] buffer = new byte[1024];
@@ -39,5 +39,4 @@ public class FileUtils {
             throw new IOException("No files in ZIP.");
         }
     }
-    
 }

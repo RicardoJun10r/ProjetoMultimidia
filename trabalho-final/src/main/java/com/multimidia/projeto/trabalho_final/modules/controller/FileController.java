@@ -22,15 +22,15 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
-    @PostMapping("/{fileId}/like")
+    @PutMapping("/like/{fileId}")
     public ResponseEntity<Void> likeFile(@PathVariable UUID fileId) {
         fileService.incrementLikes(fileId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{fileId}/comments")
+    @PutMapping("/{fileId}/comments")
     public ResponseEntity<Void> addComment(@PathVariable UUID fileId, @RequestBody CommentDTO commentDTO) {
-        fileService.addComment(fileId, commentDTO.getContent());
+        fileService.addComment(fileId, commentDTO.getNickname(), commentDTO.getContent());
         return ResponseEntity.ok().build();
     }
 
@@ -39,22 +39,34 @@ public class FileController {
         return fileService.findAll();
     }
 
+    @GetMapping("/buscar")
+    public ResponseEntity<?> downloadFile(@RequestParam String user, @RequestParam("file") String file) {
+        FileEntity fileEntity = fileService.findByName(user, file);
+        if (fileEntity != null) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.valueOf(fileEntity.getType()))
+                    .body(fileEntity.getData());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getFileById(@PathVariable UUID id) {
         FileEntity fileEntity = fileService.findById(id);
         if (fileEntity != null) {
             return ResponseEntity.status(HttpStatus.OK)
-            .contentType(MediaType.valueOf(fileEntity.getType()))
-            .body(fileEntity.getData());
+                    .contentType(MediaType.valueOf(fileEntity.getType()))
+                    .body(fileEntity.getData());
         }
         return ResponseEntity.notFound().build();
     }
 
     @SuppressWarnings("null")
     @PostMapping
-    public ResponseEntity<FileResponseDTO> uploadFile(@RequestParam UUID user, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<FileResponseDTO> uploadFile(@RequestParam String nickname,
+            @RequestParam("file") MultipartFile file) {
         try {
-            return new ResponseEntity<>(fileService.save(user, file), HttpStatus.CREATED);
+            return new ResponseEntity<>(fileService.save(nickname, file), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
