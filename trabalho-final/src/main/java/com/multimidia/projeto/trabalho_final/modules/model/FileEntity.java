@@ -1,6 +1,10 @@
 package com.multimidia.projeto.trabalho_final.modules.model;
 
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,7 +43,14 @@ public class FileEntity {
     @Column(name = "tamanho")
     private Long size;
 
+    @Column(name = "curtidas")
+    private Integer likes = 0;
+    
+    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
     @ManyToOne
-    @JoinColumn(name = "user_id") // Nome da coluna para a chave estrangeira
+    @JoinColumn(name = "user_id")
     private User user;
+
 }

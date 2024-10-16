@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.multimidia.projeto.trabalho_final.modules.model.FileEntity;
 import com.multimidia.projeto.trabalho_final.modules.service.FileService;
+import com.multimidia.projeto.trabalho_final.modules.shared.CommentDTO;
 import com.multimidia.projeto.trabalho_final.modules.shared.FileResponseDTO;
 
 @RestController
@@ -20,6 +21,18 @@ public class FileController {
 
     @Autowired
     private FileService fileService;
+
+    @PostMapping("/{fileId}/like")
+    public ResponseEntity<Void> likeFile(@PathVariable UUID fileId) {
+        fileService.incrementLikes(fileId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{fileId}/comments")
+    public ResponseEntity<Void> addComment(@PathVariable UUID fileId, @RequestBody CommentDTO commentDTO) {
+        fileService.addComment(fileId, commentDTO.getContent());
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping
     public List<FileResponseDTO> getAllFiles() {
