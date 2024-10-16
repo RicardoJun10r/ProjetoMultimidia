@@ -45,6 +45,11 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
+    @PostMapping("/login")
+    public User login(@RequestBody UserLogin user){
+        return this.userService.login(user.email(), user.password());
+    }
+
     @PostMapping
     public User createUser(@RequestBody User user) {
         return userService.save(user);

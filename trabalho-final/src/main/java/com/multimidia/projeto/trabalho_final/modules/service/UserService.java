@@ -9,6 +9,7 @@ import com.multimidia.projeto.trabalho_final.modules.repo.UserRepo;
 import com.multimidia.projeto.trabalho_final.modules.shared.UserResponseDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -80,6 +81,15 @@ public class UserService {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
             return mapper.map(user, UserResponseDTO.class);
+        }
+        return null;
+    }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public User login(String email, String password){
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return user.get();
         }
         return null;
     }
