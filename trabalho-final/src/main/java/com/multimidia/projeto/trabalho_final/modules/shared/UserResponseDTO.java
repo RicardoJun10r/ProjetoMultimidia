@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class UserResponseDTO {
     
     private String email;
-
+    private String nickname;
     private Map<String, FileResponseDTO> files;
 
 }

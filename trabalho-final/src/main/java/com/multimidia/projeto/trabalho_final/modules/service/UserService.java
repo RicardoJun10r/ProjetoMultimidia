@@ -21,6 +21,53 @@ public class UserService {
 
     private ModelMapper mapper = new ModelMapper();
 
+    @org.springframework.transaction.annotation.Transactional
+    public boolean authenticate(String nickname, String password) {
+        User user = userRepository.findByNickname(nickname).orElse(null);
+        if (user != null) {
+            return user.getPassword().equals(password);
+        }
+        return false;
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void addFriend(String userNickname, String friendNickname) {
+        User user = userRepository.findByNickname(userNickname).orElse(null);
+        User friend = userRepository.findByNickname(friendNickname).orElse(null);
+
+        if (user != null && friend != null) {
+            user.getFriends().add(friend);
+            userRepository.save(user);
+        }
+    }
+
+    public void deleteByNickname(String nickname) {
+        User user = userRepository.findByNickname(nickname).orElse(null);
+        if (user != null) {
+            userRepository.delete(user);
+        }
+    }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public UserResponseDTO findByNickname(String nickname) {
+        User user = userRepository.findByNickname(nickname).orElse(null);
+        if (user != null) {
+            return mapper.map(user, UserResponseDTO.class);
+        }
+        return null;
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void addFriend(UUID userId, UUID friendId) {
+        User user = userRepository.findById(userId).orElse(null);
+        User friend = userRepository.findById(friendId).orElse(null);
+
+        if (user != null && friend != null) {
+            user.getFriends().add(friend);
+            userRepository.save(user);
+        }
+    }
+
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public List<UserResponseDTO> findAll() {
         List<User> users = userRepository.findAll();
